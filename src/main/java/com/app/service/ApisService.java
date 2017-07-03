@@ -6,5 +6,5 @@ import com.app.entity.Apis;
  * Created by SamZhao on 2017/7/1.
  */
 public interface ApisService {
-    Apis createApis(Apis apis);
+    Apis getApiByNameOrId(String targetMethod);
 }

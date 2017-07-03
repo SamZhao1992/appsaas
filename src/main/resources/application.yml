@@ -23,3 +23,6 @@ spring:
 mybatis:
   mapperLocations: classpath*:com/app/mapper/*.xml
   typeAliasesPackage: com.app.entity
+
+kong:
+  baseurl: http://10.0.254.21:8001
