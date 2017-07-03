@@ -67,20 +67,18 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public Consumer getConsumerByNameOrId(String appNameOrId) {
-
+        Consumer consumer = null;
         if (StringUtils.isNotEmpty(appNameOrId)) {
             String str = KongRequestUtil.doGetInfo(baseurl, "consumers", appNameOrId);
             JsonParser parse = new JsonParser();
             JsonObject json = (JsonObject) parse.parse(str);
             if(json.has("id")){
-
-            }else {
-                return null;
+                consumer = new Consumer();
+                consumer.setConsumerId(json.get("consumer_id").getAsString());
+                consumer.setCreatedAt(json.get("created_at").getAsString());
             }
-        } else {
-            return null;
         }
-        return null;
+        return consumer;
     }
 
     public String getConsumerurl() {

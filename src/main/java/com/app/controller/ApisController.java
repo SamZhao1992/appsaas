@@ -5,7 +5,6 @@ import com.app.entity.Consumer;
 import com.app.entity.ResultMap;
 import com.app.service.ApisService;
 import com.app.service.ConsumerService;
-import com.app.util.KongRequestUtil;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,20 +30,43 @@ public class ApisController {
     @Autowired
     private ApisService apiService;
 
-    @RequestMapping("/{appName}/{targetMethod}")
-    public String getById(@PathVariable String appName, @PathVariable String targetMethod, HttpServletRequest request){
+    @RequestMapping("ralate/{appName}/{apiName}")
+    public String ralate(@PathVariable String appName, @PathVariable String apiName){
+        ResultMap result = new ResultMap();
+        Gson gson = new Gson();
+        logger.info(appName+","+apiName);
+        Consumer consumer = consumerService.getConsumerByNameOrId(appName);
+        Apis apis = apiService.getApiByNameOrId(apiName);
+        String res = apiService.setRalate(consumer,apis);
+        if("success".equals(res))
+            result.setCode("200");
+        else
+            result.setCode("500");
+        return gson.toJson(result);
+    }
+
+    @RequestMapping("pass/{appName}/{apiName}")
+    public String pass(@PathVariable String appName, @PathVariable String apiName, HttpServletRequest request){
         String params = request.getQueryString();
         ResultMap result = new ResultMap();
         Gson gson = new Gson();
-        logger.info(appName+","+targetMethod);
+        logger.info(appName+","+apiName);
         Consumer consumer = consumerService.getConsumerByNameOrId(appName);
         if(consumer != null){
-            Apis apis = apiService.getApiByNameOrId(targetMethod);
+            Apis apis = apiService.getApiByNameOrId(apiName);
             if(apis != null){
-                String token = KongRequestUtil.createToken(consumer, apis);
+                String apikey = apiService.getRalate(consumer, apis);
+                if(null != apikey){
+                    String res = apiService.getResult(consumer,apis,params,apikey);
+                    result.setCode("200");
+                    result.setResult(res);
+                }else{
+                    result.setCode("500");
+                    result.setResult("Wrong api key : " + apiName);
+                }
             }else{
                 result.setCode("500");
-                result.setResult("No api method : " + targetMethod);
+                result.setResult("No api method : " + apiName);
             }
         }else {
             result.setCode("500");

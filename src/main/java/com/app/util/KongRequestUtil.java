@@ -1,7 +1,5 @@
 package com.app.util;
 
-import com.app.entity.Apis;
-import com.app.entity.Consumer;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
@@ -50,7 +48,6 @@ public class KongRequestUtil {
         return token;
     }
 
-    public static String createToken(Consumer consumer, Apis apis) {
-        return "";
-    }
+
+
 }
