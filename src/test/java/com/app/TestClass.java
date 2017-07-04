@@ -15,7 +15,11 @@ import java.util.Map;
 public class TestClass {
     public static void main(String[] args){
         String result = "http://10.0.254.21:8001/consumers/3c85650c-66bd-480c-8c62-77c9bf9d8bc4";
-        result = HttpRequestUtil.doGet(result);
+        try {
+            result = HttpRequestUtil.doGet(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println(result);
 
         //添加构成JWT的参数

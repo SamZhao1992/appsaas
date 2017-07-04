@@ -80,4 +80,18 @@ public class RecordTec {
     public void setKeyAccess(String keyAccess) {
         this.keyAccess = keyAccess == null ? null : keyAccess.trim();
     }
+
+    @Override
+    public String toString() {
+        return "RecordTec{" +
+                "id=" + id +
+                ", consumerName='" + consumerName + '\'' +
+                ", consumerId='" + consumerId + '\'' +
+                ", apiId='" + apiId + '\'' +
+                ", apiName='" + apiName + '\'' +
+                ", isDelete='" + isDelete + '\'' +
+                ", isActive='" + isActive + '\'' +
+                ", keyAccess='" + keyAccess + '\'' +
+                '}';
+    }
 }

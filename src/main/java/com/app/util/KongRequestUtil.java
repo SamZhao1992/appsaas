@@ -18,7 +18,7 @@ public class KongRequestUtil {
      * @param nameOrId
      * @return
      */
-    public static String doGetInfo(String baseUrl, String type, String nameOrId){
+    public static String doGetInfo(String baseUrl, String type, String nameOrId) throws Exception {
         String result = baseUrl + "/" + type + "/" + nameOrId;
         result = HttpRequestUtil.doGet(result);
         return result;

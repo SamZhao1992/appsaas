@@ -27,9 +27,8 @@ import java.util.Map;
 
 /**
  * Created by SamZhao on 2017/6/28.
- *
+ * <p>
  * Http请求工具类
- *
  */
 public class HttpRequestUtil {
 
@@ -65,7 +64,7 @@ public class HttpRequestUtil {
      * @param params 参数
      * @return String
      */
-    public static String doGet(String url, Map<String, Object> params) {
+    public static String doGet(String url, Map<String, Object> params) throws Exception {
         String apiUrl = url;
         StringBuffer param = new StringBuffer();
         int i = 0;
@@ -86,14 +85,16 @@ public class HttpRequestUtil {
             httpGet.setConfig(requestConfig);
             HttpResponse response = httpclient.execute(httpGet);
             int statusCode = response.getStatusLine().getStatusCode();
-
-            logger.info("执行状态码 : " + statusCode);
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                InputStream instream = entity.getContent();
-                result = IOUtils.toString(instream, "UTF-8");
+            if (statusCode == 200 || statusCode == 302){
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    InputStream instream = entity.getContent();
+                    result = IOUtils.toString(instream, "UTF-8");
+                }
+            }else{
+                throw new Exception("Kong 响应失败");
             }
+
         } catch (IOException e) {
             logger.error("----doGet error " + e.getMessage());
             e.printStackTrace();
@@ -109,42 +110,34 @@ public class HttpRequestUtil {
         return result;
     }
 
-    public static String doGet(String apiurl){
+    public static String doGet(String apiurl) throws Exception {
         String result = "";
         BufferedReader in = null;
-        try {
-            String urlNameString = " http://10.0.254.21:8001/consumers/3c85650c-66bd-480c-8c62-77c9bf9d8bc4" ;
-            URL realUrl = new URL(urlNameString);
-            // 打开和URL之间的连接
-            URLConnection connection = realUrl.openConnection();
-            // 设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-            // 建立实际的连接
-            connection.connect();
-            // 定义 BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream(),"utf-8"));//防止乱码
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
-        } catch (Exception e) {
-            System.out.println("发送GET请求出现异常！" + e);
-            e.printStackTrace();
+//            String urlNameString = " http://10.0.254.21:8001/consumers/3c85650c-66bd-480c-8c62-77c9bf9d8bc4" ;
+        URL realUrl = new URL(apiurl);
+        // 打开和URL之间的连接
+        URLConnection connection = realUrl.openConnection();
+        // 设置通用的请求属性
+        connection.setRequestProperty("accept", "*/*");
+        connection.setRequestProperty("connection", "Keep-Alive");
+        connection.setRequestProperty("user-agent",
+                "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+        // 建立实际的连接
+        connection.connect();
+        // 定义 BufferedReader输入流来读取URL的响应
+        in = new BufferedReader(new InputStreamReader(
+                connection.getInputStream(), "utf-8"));//防止乱码
+        String line;
+        while ((line = in.readLine()) != null) {
+            result += line;
         }
+
         // 使用finally块来关闭输入流
-        finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
+
+        if (in != null) {
+            in.close();
         }
+
         return result;
     }
 
@@ -155,7 +148,7 @@ public class HttpRequestUtil {
      * @param params 参数map
      * @return String
      */
-    public static String doPost(String apiUrl, Map<String, Object> params) {
+    public static String doPost(String apiUrl, Map<String, Object> params) throws Exception {
 
         requestConfig = RequestConfig.custom()
                 .setConnectTimeout(30000).setConnectionRequestTimeout(10000)
@@ -174,16 +167,23 @@ public class HttpRequestUtil {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 jsonParam.put(entry.getKey(), entry.getValue().toString());
             }
-            StringEntity stringEntity = new StringEntity(jsonParam.toString(),"utf-8");//解决中文乱码问题
+            StringEntity stringEntity = new StringEntity(jsonParam.toString(), "utf-8");//解决中文乱码问题
             stringEntity.setContentEncoding("UTF-8");
             stringEntity.setContentType("application/json");
             httpPost.setEntity(stringEntity);
 
             response = httpClient.execute(httpPost);
 
-            logger.info(response.toString());
-            HttpEntity entity = response.getEntity();
-            httpStr = EntityUtils.toString(entity, "UTF-8");
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200 || statusCode == 302){
+                logger.info(response.toString());
+                HttpEntity entity = response.getEntity();
+                httpStr = EntityUtils.toString(entity, "UTF-8");
+            }else{
+                throw new Exception("Kong 响应失败");
+            }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

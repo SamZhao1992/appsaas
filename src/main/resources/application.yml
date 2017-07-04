@@ -26,3 +26,4 @@ mybatis:
 
 kong:
   baseurl: http://10.0.254.21:8001
+  requrl: http://10.0.254.21:8000

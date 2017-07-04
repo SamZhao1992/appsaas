@@ -1,18 +1,38 @@
 package com.app.entity;
 
 public class Apis {
-    private String id;
+    private String apiId;
+
+    private String apiName;
 
     private String upstreamUrl;
 
     private String uris;
 
-    public String getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "Apis{" +
+                "apiId='" + apiId + '\'' +
+                ", apiName='" + apiName + '\'' +
+                ", upstreamUrl='" + upstreamUrl + '\'' +
+                ", uris='" + uris + '\'' +
+                '}';
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public String getApiId() {
+        return apiId;
+    }
+
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
+    }
+
+    public String getApiName() {
+        return apiName;
+    }
+
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
     }
 
     public String getUpstreamUrl() {
@@ -20,7 +40,7 @@ public class Apis {
     }
 
     public void setUpstreamUrl(String upstreamUrl) {
-        this.upstreamUrl = upstreamUrl == null ? null : upstreamUrl.trim();
+        this.upstreamUrl = upstreamUrl;
     }
 
     public String getUris() {
@@ -28,6 +48,6 @@ public class Apis {
     }
 
     public void setUris(String uris) {
-        this.uris = uris == null ? null : uris.trim();
+        this.uris = uris;
     }
 }

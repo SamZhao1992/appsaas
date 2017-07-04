@@ -8,11 +8,11 @@ import com.app.entity.Consumer;
  */
 public interface ApisService {
 
-    String setRalate(Consumer consumer, Apis apis);
+    int setRalate(Consumer consumer, Apis apis) throws Exception;
 
     String getRalate(Consumer consumer, Apis apis);
 
-    Apis getApiByNameOrId(String targetMethod);
+    Apis getApiByNameOrId(String targetMethod) throws Exception;
 
-    String getResult(Consumer consumer, Apis apis, String params, String apikey);
+    String getResult(Consumer consumer, Apis apis, String params, String apikey) throws Exception;
 }

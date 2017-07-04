@@ -30,47 +30,72 @@ public class ApisController {
     @Autowired
     private ApisService apiService;
 
+    /**
+     * 设置绑定关系
+     * @param appName
+     * @param apiName
+     * @return
+     */
     @RequestMapping("ralate/{appName}/{apiName}")
     public String ralate(@PathVariable String appName, @PathVariable String apiName){
         ResultMap result = new ResultMap();
+        result.setCode("500");
+        result.setResult("Fail!");
         Gson gson = new Gson();
         logger.info(appName+","+apiName);
-        Consumer consumer = consumerService.getConsumerByNameOrId(appName);
-        Apis apis = apiService.getApiByNameOrId(apiName);
-        String res = apiService.setRalate(consumer,apis);
-        if("success".equals(res))
+        int res = 0;
+        try {
+            Consumer consumer = consumerService.getConsumerByNameOrId(appName);
+            Apis apis = apiService.getApiByNameOrId(apiName);
+            res = apiService.setRalate(consumer,apis);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        if(res > 0){
             result.setCode("200");
-        else
-            result.setCode("500");
+            result.setResult("Success!");
+        }
         return gson.toJson(result);
     }
 
+    /**
+     * 中间接口调用
+     * @param appName
+     * @param apiName
+     * @param request
+     * @return
+     */
     @RequestMapping("pass/{appName}/{apiName}")
     public String pass(@PathVariable String appName, @PathVariable String apiName, HttpServletRequest request){
         String params = request.getQueryString();
         ResultMap result = new ResultMap();
+        result.setCode("500");
+        result.setResult("Fail!");
         Gson gson = new Gson();
         logger.info(appName+","+apiName);
-        Consumer consumer = consumerService.getConsumerByNameOrId(appName);
-        if(consumer != null){
-            Apis apis = apiService.getApiByNameOrId(apiName);
-            if(apis != null){
-                String apikey = apiService.getRalate(consumer, apis);
-                if(null != apikey){
-                    String res = apiService.getResult(consumer,apis,params,apikey);
-                    result.setCode("200");
-                    result.setResult(res);
+        try {
+            Consumer consumer = consumerService.getConsumerByNameOrId(appName);
+            if(consumer != null){
+                Apis apis = apiService.getApiByNameOrId(apiName);
+                if(apis != null){
+                    String apikey = apiService.getRalate(consumer, apis);
+                    if(null != apikey){
+                        String res = apiService.getResult(consumer,apis,params,apikey);
+                        result.setCode("200");
+                        result.setResult(res);
+                    }else{
+                        result.setResult("Wrong api key : " + apiName);
+                    }
                 }else{
-                    result.setCode("500");
-                    result.setResult("Wrong api key : " + apiName);
+                    result.setResult("No api method : " + apiName);
                 }
-            }else{
-                result.setCode("500");
-                result.setResult("No api method : " + apiName);
+            }else {
+                result.setResult("No consumer : " + appName);
             }
-        }else {
-            result.setCode("500");
-            result.setResult("No consumer : " + appName);
+        } catch (Exception e) {
+            result.setResult(e.getMessage());
+            logger.error(e.getMessage());
         }
         return gson.toJson(result);
     }
