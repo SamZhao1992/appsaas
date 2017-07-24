@@ -2,16 +2,15 @@ spring:
   datasource:
     name: mydb
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:3306/kong
-    username: root
-    password: root
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:postgresql://10.0.254.21:5432/kong
+    username: kong
+    password: kong
+    driver-class-name: org.postgresql.Driver
     minIdle: 1
     maxActive: 2
     initialSize: 1
     timeBetweenEvictionRunsMillis: 3000
     minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT 'ZTM' FROM DUAL
     testWhileIdle: true
     testOnBorrow: false
     testOnReturn: false

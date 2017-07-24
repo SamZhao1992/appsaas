@@ -6,6 +6,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -57,6 +58,27 @@ public class HttpRequestUtil {
         requestConfig = configBuilder.build();
     }
 
+    public static String doDelete(String url) throws Exception {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        String result = null;
+        try {
+            logger.info(url);
+            HttpDelete httpDelete = new HttpDelete(url);
+            httpDelete.setConfig(requestConfig);
+            HttpResponse response = httpclient.execute(httpDelete);
+            int statusCode = response.getStatusLine().getStatusCode();
+            logger.info("doDelete..."+statusCode+"");
+            if (statusCode != 404 && statusCode != 500){
+                result = statusCode+"";
+            }else{
+                throw new Exception("Kong 响应失败");
+            }
+        }catch (Exception e){
+            throw new Exception("Kong 响应失败");
+        }
+        return result;
+    }
+
     /**
      * 发送 GET 请求（HTTP），K-V形式
      *
@@ -85,7 +107,8 @@ public class HttpRequestUtil {
             httpGet.setConfig(requestConfig);
             HttpResponse response = httpclient.execute(httpGet);
             int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == 200 || statusCode == 302){
+            logger.info("doGet..."+statusCode+"");
+            if (statusCode != 404 && statusCode != 500){
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
@@ -175,7 +198,8 @@ public class HttpRequestUtil {
             response = httpClient.execute(httpPost);
 
             int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == 200 || statusCode == 302){
+            logger.info("doPost..."+statusCode+"");
+            if (statusCode != 404 && statusCode != 500){
                 logger.info(response.toString());
                 HttpEntity entity = response.getEntity();
                 httpStr = EntityUtils.toString(entity, "UTF-8");
