@@ -2,7 +2,7 @@ spring:
   datasource:
     name: mydb
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:postgresql://10.0.254.21:5432/kong
+    url: jdbc:postgresql://192.168.16.3:5432/kong
     username: kong
     password: kong
     driver-class-name: org.postgresql.Driver
@@ -24,5 +24,7 @@ mybatis:
   typeAliasesPackage: com.app.entity
 
 kong:
-  baseurl: http://10.0.254.21:8001
-  requrl: http://10.0.254.21:8000
+  baseurl: http://192.168.16.3:8001
+  requrl: http://192.168.16.3:8000
+server:
+  port: 8099

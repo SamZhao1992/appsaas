@@ -5,6 +5,7 @@ import sun.misc.BASE64Encoder;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 /**
  * Created by SamZhao on 2017/7/24.
@@ -20,6 +21,7 @@ public class MD5Utils {
     public static String EncoderByMd5(String str){
         String newstr = null;
         try {
+
             //确定计算方法
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             BASE64Encoder base64en = new BASE64Encoder();
@@ -32,7 +34,9 @@ public class MD5Utils {
     }
 
     public static void main(String[] args){
-        String str = "123zxc";
+        String str = "123";
+        String id= UUID.randomUUID().toString();
+        System.out.println(id);
         for(int i=0;i<100;i++){
             System.out.println(MD5Utils.EncoderByMd5(str));
         }
