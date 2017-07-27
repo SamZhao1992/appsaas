@@ -40,8 +40,10 @@ public class UserController {
         Gson gson = new Gson();
         logger.info(MD5Utils.EncoderByMd5(user.getPassword()));
         user = userService.loginUser(user);
-        logger.info(user.toString());
-        return gson.toJson(user);
+        if(user != null)
+            return gson.toJson(user);
+        else
+            return gson.toJson("fail");
     }
 
     /**

@@ -2,6 +2,7 @@ spring:
   datasource:
     name: mydb
     type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:postgresql://10.0.254.21:5432/kong
     url: jdbc:postgresql://192.168.16.3:5432/kong
     username: kong
     password: kong
